@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODAYDO</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/task-list.css">
+    <link rel="stylesheet" href="./css/add-form.css">
+</head>
+<body>
+    <div id="title" data-text="TODAYDO"></div>
+
+    <div class="form add-form_wrapper">
+        <span class="form-overlay"></span>
+        <div class="add-form">
+            <header class="add-form_header">
+                <h4 class="add-title">Add task</h4>
+                <div class="form-btn add-esc"><i class='bx bx-x'></i></div>
+            </header>
+    
+            <input class="form-input add-name" type="text" placeholder="Name" required>
+    
+            <div class="add-desc_wrapper">
+                <textarea class="form-input add-desc" placeholder="Task description" cols="30" rows="5" required></textarea>
+                <span class="form-btn add-desc_btn"><i class='bx bx-x'></i></span>
+            </div>
+    
+            <div class="add-time_wrapper">
+                <label for="add-time_hour" class="add-time_label">Hour:</label>
+                <input type="number" min="0" max="23" value="0" id="add-time_hour" class="form-input" required>
+    
+                <label for="add-time_minute" class="add-time_label">Minute:</label>
+                <input type="number" min="0" max="60" value="0" id="add-time_minute" class="form-input" required>
+            </div>
+    
+            <div class="add-priority_wrapper">
+                <label for="add-priority_input" class="add-priority">Important</label>
+                <input type="checkbox" id="add-priority_input">
+                <span class="add-priority_input--custom"></span>
+            </div>
+    
+            <button class="add-btn">Add</button>
+        </div>
+    </div>
+
+    <div id="app">
+        <header class="header">
+            <div class="date-clock">
+                <span class="date"></span>
+                <div class="clock"></div>
+            </div>
+            <div class="actions">
+                <span class="filter">
+                    <i class='bx bx-filter' ></i>
+                    <ul class="filter-options">
+                        <li class="option all">all</li> 
+                        <li class="option normal">normal</li>
+                        <li class="option important">important</li>
+                    </ul>
+                </span>
+                <span class="add"><i class='bx bx-plus'></i></span>
+            </div>
+        </header>
+        
+        <div class="app-body">
+            <ul class="task-list"></ul>
+
+            <div class="upcoming-wrapper">
+                <span>
+                    Up coming
+                    <span class="dot">.</span>
+                    <span class="dot">.</span>
+                    <span class="dot">.</span>
+                </span>
+                <div class="upcoming">
+                    <div class="upcoming-infor">
+                        <span class="upcoming-priority important">Important</span>
+                        <span class="upcoming-name">Play game</span>
+                    </div>
+                    <span class="upcoming-time">22:00</span>
+                </div>
+            </div>
+        </div> 
+    </div>
+</body>
+
+<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script> 
+<script src="./index.js" ></script>
+</html>

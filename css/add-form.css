@@ -1,0 +1,141 @@
+/*  */
+.add-form_wrapper {
+    opacity: 0;
+    pointer-events: none;
+}
+.add-form_wrapper.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.add-form_wrapper * {
+    transition: .4s;
+}
+
+
+.add-form {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform:translate(-50%, -60%);
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    min-height: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+}
+.add-form_wrapper.open .add-form {
+    transform:translate(-50%, -50%);
+}
+
+.add-form_header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+.add-title {
+    letter-spacing: 2px;
+}
+.add-esc {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+.add-name,
+.add-desc {
+    margin-bottom: 10px;
+}
+
+
+.add-desc_wrapper {
+    position: relative;
+    width: 100%;
+}
+.add-desc {
+    width: 100%;
+    font-family: sans-serif;
+    resize: none;
+}
+.add-desc_btn {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+    font-size: 2rem;
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    cursor: grab;
+}
+
+
+.add-priority_wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+.add-priority {
+    font-size: 1.6rem;
+    color: var(--text-color--dark);
+}
+#add-priority_input {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    z-index: 3;
+    opacity: 0;
+}
+.add-priority_input--custom {
+    position: absolute;
+    left: 78px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #bbc9ec;
+    border-radius: 4px;
+}
+#add-priority_input:checked ~ .add-priority_input--custom {
+    background-color: var(--primary-color);
+}
+
+
+.add-time_wrapper {
+    height: 30px;
+}
+.add-time_label {
+    font-size: 1.6rem;
+    color: var(--text-color--dark);
+}
+#add-time_hour,
+#add-time_minute {
+    width: 60px;
+    height: 100%;
+    margin: 0 30px 0 4px;
+    text-align: center;
+}
+
+
+.add-btn {
+    padding: 16px 0;
+    margin-top: 40px;
+    font-size: 2rem;
+    font-weight: bold;
+    border: 1px solid var(--primary-color);
+    letter-spacing: 2px;
+    color: var(--text-color--light);
+    background-color: var(--primary-color);
+    cursor: grab;
+}
+.add-btn:hover {
+    background-color: var(--back-color);
+    color: var(--text-color--dark);
+}
