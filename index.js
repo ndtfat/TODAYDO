@@ -5,6 +5,20 @@ const taskListElement = $('.task-list')
 const taskDesc = $('.add-desc')
 const taskList = []
 
+
+//setup firebase
+const firebaseConfig = { 
+    apiKey: "AIzaSyAQuPuewOhAIyQnPKZSmecGU5yKm7nzvPo",
+    authDomain: "do-an-1-74ead.firebaseapp.com",
+    projectId: "do-an-1-74ead",
+    storageBucket: "do-an-1-74ead.appspot.com",
+    messagingSenderId: "207368436299",
+    appId: "1:207368436299:web:fb556c68ae3735f3e96bce",
+    measurementId: "G-4NFCJV5Q78"
+}
+firebase.initializeApp(firebaseConfig);
+var database = firebase.database()    
+
 const App = {
     handleTime() {
         _this = this
@@ -60,6 +74,7 @@ const App = {
                 
                 // update task to firebase 
                 if ((taskTime-realTime) === 0) {
+                    console.log(task);
                     _this.firebase(task.name, task.hour, task.minute)
                 }
 
@@ -85,19 +100,7 @@ const App = {
         }
         setInterval(time, 1000)
     },
-    firebase(name, hour, minute) {
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAQuPuewOhAIyQnPKZSmecGU5yKm7nzvPo",
-            authDomain: "do-an-1-74ead.firebaseapp.com",
-            projectId: "do-an-1-74ead",
-            storageBucket: "do-an-1-74ead.appspot.com",
-            messagingSenderId: "207368436299",
-            appId: "1:207368436299:web:fb556c68ae3735f3e96bce",
-            measurementId: "G-4NFCJV5Q78"
-        }
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database()        
+    firebase(name, hour, minute) { 
         database.ref("/Task").update({
             "name": name,
             "hour": hour,
@@ -270,7 +273,9 @@ const App = {
             }
         } 
     },
-    start() {
+    start() {   
+
+        // 
         this.handleTime()
         this.renderTasks(taskList)
         this.handleEvents()
