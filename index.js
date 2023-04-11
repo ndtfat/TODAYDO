@@ -5,16 +5,15 @@ const taskListElement = $('.task-list')
 const taskDesc = $('.add-desc')
 const taskList = []
 
-
 //setup firebase
 const firebaseConfig = { 
-    apiKey: "AIzaSyAQuPuewOhAIyQnPKZSmecGU5yKm7nzvPo",
-    authDomain: "do-an-1-74ead.firebaseapp.com",
-    projectId: "do-an-1-74ead",
-    storageBucket: "do-an-1-74ead.appspot.com",
-    messagingSenderId: "207368436299",
-    appId: "1:207368436299:web:fb556c68ae3735f3e96bce",
-    measurementId: "G-4NFCJV5Q78"
+    apiKey: "AIzaSyAIeEJzEOEQGdQsVMWo7JrrDc-y2ZgJ-_A",
+    authDomain: "todaydo-509f7.firebaseapp.com",
+    projectId: "todaydo-509f7",
+    storageBucket: "todaydo-509f7.appspot.com",
+    messagingSenderId: "1062585547493",
+    appId: "1:1062585547493:web:c27bbc0931b25190c6720c",
+    measurementId: "G-XLPWYZF6KT"
 }
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database()    
@@ -91,7 +90,7 @@ const App = {
                 else
                     $('.upcoming-priority').classList.add('important')
             } else {
-                console.log('no task coming');
+                // console.log('no task coming');
                 $('.upcoming-priority').style.display = 'none'
                 $('.upcoming-name').textContent = 'nothing to do . . .'
                 $('.upcoming-time').textContent = ``
@@ -106,6 +105,7 @@ const App = {
             "hour": hour,
             "minute": minute,
         })
+        console.log('firebase update');
     },
     sortTaskList(list) {
         list.sort((a, b) => {
@@ -283,3 +283,6 @@ const App = {
 }
 
 App.start()
+
+
+
