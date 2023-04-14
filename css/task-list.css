@@ -49,9 +49,12 @@
     transform: scale(1.04);
     background-color: var(--secondary-color);
 }
+.task:active {
+    transform: scale(1);
+}
 
 .task.overtime {
-    filter: grayscale(0.5);
+    filter: blur(2px);
 }
 
 
@@ -61,6 +64,7 @@
     justify-content: space-between;
     height: 100%;
     padding: 2px 0;
+    overflow: hidden;
 }
 .task-specific {
     font-size: 1.4rem;
@@ -94,6 +98,9 @@
 .task-name {
     font-size: 1.8rem;
     color: var(--text-color--dark);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .task:hover .task-name{
     color: var(--text-color--light)
@@ -176,6 +183,9 @@
     opacity: 1;
     transform: translate(-72px, -50%);
 }
+.task-actions_wrapper:hover .task {
+    filter: brightness(0.5);
+}
 
 
 .upcoming-wrapper {
@@ -218,11 +228,12 @@
     background-color: #fff;
 }
 .upcoming-infor {
-    z-index: 1;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
+    overflow: hidden;
 }
 .upcoming-priority {
     width: 76px;
@@ -239,6 +250,9 @@
 }
 .upcoming-name {
     font-size: 2rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .upcoming-time {
     font-size: 2.8rem;

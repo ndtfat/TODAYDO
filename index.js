@@ -1,9 +1,20 @@
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
+const taskName = $('.add-name')
+const taskHour = $('#add-time_hour')
+const taskMinute = $('#add-time_minute')
+const taskPri = $('#add-priority_input')
+const taskDetail = $('.task-detail_wrapper')
+
 const taskListElement = $('.task-list')
 const taskDesc = $('.add-desc')
-const taskList = []
+const taskList = JSON.parse(localStorage.getItem('taskList')) || []
+
+const synth = window.speechSynthesis;
+const utterance = new SpeechSynthesisUtterance();
+utterance.lang = 'vi';
+utterance.volume = 0;
 
 //setup firebase
 const firebaseConfig = { 
@@ -73,8 +84,7 @@ const App = {
                 
                 // update task to firebase 
                 if ((taskTime-realTime) === 0) {
-                    console.log(task);
-                    _this.firebase(task.name, task.hour, task.minute)
+                    _this.firebase(task)
                 }
 
                 return (taskTime > realTime)
@@ -90,20 +100,20 @@ const App = {
                 else
                     $('.upcoming-priority').classList.add('important')
             } else {
-                // console.log('no task coming');
                 $('.upcoming-priority').style.display = 'none'
-                $('.upcoming-name').textContent = 'nothing to do . . .'
+                $('.upcoming-name').textContent = 'nothing to do ...'
                 $('.upcoming-time').textContent = ``
             }
 
         }
         setInterval(time, 1000)
     },
-    firebase(name, hour, minute) { 
+    firebase(task) { 
         database.ref("/Task").update({
-            "name": name,
-            "hour": hour,
-            "minute": minute,
+            "name": task.name,
+            "hour": task.hour,
+            "minute": task.minute,
+            "duration": task.duration
         })
         console.log('firebase update');
     },
@@ -111,14 +121,14 @@ const App = {
         list.sort((a, b) => {
             return a.hour - b.hour || a.minute - b.minute
         })
-        console.log('sorting list');
     },
     renderTasks(taskList) {        
+        //render
         taskListElement.innerHTML =  ''
         this.sortTaskList(taskList)
         taskList.forEach((task, index) => {
             const taskElement = document.createElement('li')
-            taskElement.className = `task ${task.isDone ? 'done' : ''} ${task.isOvertime ? 'overtime' : ''}`
+            taskElement.className = `task ${task.isDone ? 'done' : ''} ${task.isOvertime ? 'overtime' : ''}`.trim()
             taskElement.setAttribute('data-index', index)
             taskElement.innerHTML = 
             `
@@ -129,7 +139,7 @@ const App = {
                     </span>
                     <span class="task-priority task-priority--${task.priority}">${task.priority}</span>
                 </div>
-                <span class="task-name">${task.name}</span>
+                <p class="task-name">${task.name}</p>
             </div>
             <div class="task-actions_wrapper">
                 <span class="task-actions_overlay"></span>
@@ -149,30 +159,30 @@ const App = {
             taskElement.style.animationDelay = `${index * 0.2}s`
             taskListElement.appendChild(taskElement)
         })
-        console.log('render ', taskList);
     },
     filterTask(taskList, filter) {  
         const taskFilter = taskList.filter((task) => {
             return task.priority === filter
         })
 
-        console.log('filter ', taskFilter);
         return taskFilter
     },
     addTask() {
-        const taskName = $('.add-name')
-        const taskHour = $('#add-time_hour')
-        const taskMinute = $('#add-time_minute')
-        const taskPri = $('#add-priority_input')
         const newTask = {}
+        
+        let d = new Date()
+        let h = d.getHours()
+        let m = d.getMinutes()
 
+        newTask.duration = 0
         newTask.name = taskName.value
         newTask.desc = taskDesc.value
-        newTask.hour = taskHour.value
-        newTask.minute = taskMinute.value
+        newTask.hour = Number(taskHour.value)
+        newTask.minute = Number(taskMinute.value)
         newTask.priority = (taskPri.checked ? `important` : `normal`)
-        newTask.isDone = false
-        newTask.isOvertime = false
+        newTask.isDone = false;
+        newTask.isOvertime = Number(taskHour.value) > h ? false :  Number(taskMinute.value) < m
+
         taskList.push(newTask)
         
         taskName.value = ''
@@ -180,30 +190,58 @@ const App = {
         taskHour.value = 0
         taskMinute.value = 0
         taskPri.checked = false
-
-        console.log('add task', newTask);
+        
+        const start = Date.now();
+        console.log('play', newTask.name);
+        utterance.text = newTask.name
+        synth.speak(utterance);
+        utterance.addEventListener('end', () => {
+            const end = Date.now();
+            const duration = (end - start) / 1000;
+            taskList.forEach(task => {
+                if (task.name === newTask.name && task.hour === newTask.hour) 
+                    task.duration = Math.ceil(duration)
+            })
+                    
+            // save taskList on localStorage
+            localStorage.setItem('taskList', JSON.stringify(taskList))
+            console.log(`Duration: ${duration} seconds`);
+            console.log(taskList);
+        });
     },
     handleActions(action, taskElement) {
         switch (action) {
             case 'check': {
                 taskList[taskElement.dataset.index].done = !taskList[taskElement.dataset.index].done
                 taskElement.classList.toggle('done')
-                console.log('check action ', taskElement);
                 break;
             }
             case 'delete': {
                 taskList.splice(taskElement.dataset.index, 1)
                 this.renderTasks(taskList)
-                console.log('delete action ', taskElement);
+                break;
+            }
+            case 'showDetail': {
+                const [task] = taskList.filter((task)=> {
+                    return task.name === taskElement.querySelector('.task-name').textContent && taskElement.querySelector('.task-time').textContent.includes(`${task.hour}:`)
+                })
+                
+                if (task.priority === 'important')
+                    taskDetail.classList.add('important')
+                else
+                    taskDetail.classList.remove('important') 
+
+                $('.task-detail_name').textContent = `${task.name}`
+                $('.task-detail_time').textContent = taskElement.querySelector('.task-time').textContent
+                $('.task-detail_desc').textContent = task.desc ? `${task.desc}` : 'task has no description...'
+                taskDetail.classList.add('open')
                 break;
             }
         }
-
-        console.log('after action: ', taskList);
     },
     handleEvents() {
         const _this = this
-        // show / hide form add task
+        // show / hide form
         const addForm = $('.add-form_wrapper')
         const addTaskBtn = $('#app .actions .add')
         const formEscBtn = $('.add-esc')
@@ -215,7 +253,9 @@ const App = {
         addTaskBtn.onclick = showForm
         formEscBtn.onclick = hideForm
         formOverlay.onclick = hideForm
-
+        taskDetail.onclick =() => {
+            taskDetail.classList.remove('open')
+        }
         // filter priority
         const normalPri = $('.option.normal')
         const importantPri = $('.option.important')
@@ -242,7 +282,6 @@ const App = {
             // check input 
             for (let input of formInputs) {
                 if ((!input.checkValidity())) {
-                    console.log('invalid input: ', input.style);
                     input.classList.add('invalid')
                     isFill = false
                 } else {
@@ -260,15 +299,17 @@ const App = {
         // task actions
         taskListElement.onclick = (e) => {
             const taskElement = e.target.closest('.task')
-            if (e.target.closest('.task-action.check')) {
+            const checkElement = e.target.closest('.task-action.check')
+            const deleteElement = e.target.closest('.task-action.delete')
+
+            if (taskElement && !checkElement && !deleteElement) {
+                _this.handleActions('showDetail', taskElement)
+            }
+            if (checkElement) {
                 _this.handleActions('check', taskElement)
             }
 
-            if (e.target.closest('.task-action.adjust')) {
-                _this.handleActions('adjust', taskElement)
-            }
-
-            if (e.target.closest('.task-action.delete')) {
+            if (deleteElement) {
                 _this.handleActions('delete', taskElement)
             }
         } 

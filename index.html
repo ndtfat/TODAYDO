@@ -10,10 +10,51 @@
     <link rel="stylesheet" href="./css/header.css">
     <link rel="stylesheet" href="./css/task-list.css">
     <link rel="stylesheet" href="./css/add-form.css">
+    <link rel="stylesheet" href="./css/task-detail.css">
 </head>
 <body>
     <div id="title" data-text="TODAYDO"></div>
+    <div id="app">
+        <header class="header">
+            <div class="date-clock">
+                <span class="date"></span>
+                <div class="clock"></div>
+            </div>
+            <div class="actions">
+                <span class="filter">
+                    <i class='bx bx-filter' ></i>
+                    <ul class="filter-options">
+                        <li class="option all">all</li> 
+                        <li class="option normal">normal</li>
+                        <li class="option important">important</li>
+                    </ul>
+                </span>
+                <span class="add"><i class='bx bx-plus'></i></span>
+            </div>
+        </header>
+        
+        <div class="app-body">
+            <ul class="task-list"></ul>
 
+            <div class="upcoming-wrapper">
+                <span>
+                    Up coming
+                    <span class="dot">.</span>
+                    <span class="dot">.</span>
+                    <span class="dot">.</span>
+                </span>
+                <div class="upcoming">
+                    <div class="upcoming-infor">
+                        <span class="upcoming-priority important">Important</span>
+                        <p class="upcoming-name">Play game</p>
+                    </div>
+                    <span class="upcoming-time">22:00</span>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+    
     <div class="form add-form_wrapper">
         <span class="form-overlay"></span>
         <div class="add-form">
@@ -47,44 +88,14 @@
         </div>
     </div>
 
-    <div id="app">
-        <header class="header">
-            <div class="date-clock">
-                <span class="date"></span>
-                <div class="clock"></div>
-            </div>
-            <div class="actions">
-                <span class="filter">
-                    <i class='bx bx-filter' ></i>
-                    <ul class="filter-options">
-                        <li class="option all">all</li> 
-                        <li class="option normal">normal</li>
-                        <li class="option important">important</li>
-                    </ul>
-                </span>
-                <span class="add"><i class='bx bx-plus'></i></span>
-            </div>
-        </header>
-        
-        <div class="app-body">
-            <ul class="task-list"></ul>
-
-            <div class="upcoming-wrapper">
-                <span>
-                    Up coming
-                    <span class="dot">.</span>
-                    <span class="dot">.</span>
-                    <span class="dot">.</span>
-                </span>
-                <div class="upcoming">
-                    <div class="upcoming-infor">
-                        <span class="upcoming-priority important">Important</span>
-                        <span class="upcoming-name">Play game</span>
-                    </div>
-                    <span class="upcoming-time">22:00</span>
-                </div>
-            </div>
-        </div> 
+    <div class="task-detail_wrapper important">
+        <div class="task-detail_content">
+            <div class="task-detail_time">22:00</div>
+            <div class="task-detail_info">
+                <p class="task-detail_name">Do something something s</p>
+                <p class="task-detail_desc">something something something something something something something</p>
+            </div>  
+        </div>
     </div>
 </body>
 <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
