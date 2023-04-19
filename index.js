@@ -42,6 +42,7 @@ const App = {
             let day = d.getDay()
             let date = d.getDate()
             let month = d.getMonth()
+            const realTime = h * 10000 + m * 100 + s
 
             // handle date
             const dayObj = {
@@ -75,21 +76,22 @@ const App = {
             let ss = (s<10) ? `0${s}` : `${s}`
             clockDiv.textContent = `${hh}:${mm}:${ss}`
 
-            // task over time
 
             // handle task time
             const comingTaskList = taskList.filter((task) => {
                 const taskTime = task.hour * 10000 + task.minute * 100
-                const realTime = h * 10000 + m * 100 + s
                 
                 // update task to firebase 
                 if ((taskTime-realTime) === 0) {
                     _this.firebase(task)
+                    task.isOvertime = true
+                    _this.renderTasks(taskList)
+                    console.log("update firebase");
                 }
 
                 return (taskTime > realTime)
             })
-            if (comingTaskList.length > 0) {
+            if (comingTaskList.length > 0 && !comingTaskList[0].isDone) {
                 const taskUpcoming = comingTaskList[0]
                 $('.upcoming-priority').style.display = 'block'
                 $('.upcoming-priority').textContent = taskUpcoming.priority
@@ -109,20 +111,24 @@ const App = {
         setInterval(time, 1000)
     },
     firebase(task) { 
-        database.ref("/Task").update({
-            "name": task.name,
-            "hour": task.hour,
-            "minute": task.minute,
-            "duration": task.duration
-        })
-        console.log('firebase update');
+        if (!task.isDone) {
+            database.ref("/Task").update({
+                "name": task.name,
+                "hour": task.hour,
+                "minute": task.minute,
+                "priority": task.priority,
+                "duration": task.duration
+            })
+            console.log('firebase update');
+        }
     },
     sortTaskList(list) {
         list.sort((a, b) => {
             return a.hour - b.hour || a.minute - b.minute
         })
     },
-    renderTasks(taskList) {        
+    renderTasks(taskList) {
+        localStorage.setItem('taskList', JSON.stringify(taskList))
         //render
         taskListElement.innerHTML =  ''
         this.sortTaskList(taskList)
@@ -173,6 +179,7 @@ const App = {
         let d = new Date()
         let h = d.getHours()
         let m = d.getMinutes()
+        let s = d.getMinutes()
 
         newTask.duration = 0
         newTask.name = taskName.value
@@ -181,7 +188,7 @@ const App = {
         newTask.minute = Number(taskMinute.value)
         newTask.priority = (taskPri.checked ? `important` : `normal`)
         newTask.isDone = false;
-        newTask.isOvertime = Number(taskHour.value) > h ? false :  Number(taskMinute.value) < m
+        newTask.isOvertime = (newTask.hour * 10000 + newTask.minute * 100) < (h * 10000 + m * 100 + s)
 
         taskList.push(newTask)
         
@@ -204,7 +211,6 @@ const App = {
             })
                     
             // save taskList on localStorage
-            localStorage.setItem('taskList', JSON.stringify(taskList))
             console.log(`Duration: ${duration} seconds`);
             console.log(taskList);
         });
@@ -212,8 +218,9 @@ const App = {
     handleActions(action, taskElement) {
         switch (action) {
             case 'check': {
-                taskList[taskElement.dataset.index].done = !taskList[taskElement.dataset.index].done
+                taskList[taskElement.dataset.index].isDone = !taskList[taskElement.dataset.index].isDone
                 taskElement.classList.toggle('done')
+                console.log(taskList);
                 break;
             }
             case 'delete': {
@@ -232,7 +239,7 @@ const App = {
                     taskDetail.classList.remove('important') 
 
                 $('.task-detail_name').textContent = `${task.name}`
-                $('.task-detail_time').textContent = taskElement.querySelector('.task-time').textContent
+                $('.task-detail_time').innerHTML = taskElement.querySelector('.task-time').innerHTML
                 $('.task-detail_desc').textContent = task.desc ? `${task.desc}` : 'task has no description...'
                 taskDetail.classList.add('open')
                 break;

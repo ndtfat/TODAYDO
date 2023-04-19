@@ -54,7 +54,7 @@
 }
 
 .task.overtime {
-    filter: blur(2px);
+    filter: brightness(0.6);
 }
 
 
