@@ -89,9 +89,10 @@ const App = {
                     console.log("update firebase");
                 }
 
-                return (taskTime > realTime)
+                return (taskTime > realTime) && !task.isDone
             })
-            if (comingTaskList.length > 0 && !comingTaskList[0].isDone) {
+
+            if (comingTaskList.length > 0) {
                 const taskUpcoming = comingTaskList[0]
                 $('.upcoming-priority').style.display = 'block'
                 $('.upcoming-priority').textContent = taskUpcoming.priority
@@ -233,6 +234,11 @@ const App = {
                     return task.name === taskElement.querySelector('.task-name').textContent && taskElement.querySelector('.task-time').textContent.includes(`${task.hour}:`)
                 })
                 
+                if (task.isDone)
+                    taskDetail.classList.add('done')
+                else
+                    taskDetail.classList.remove('done')
+                    
                 if (task.priority === 'important')
                     taskDetail.classList.add('important')
                 else

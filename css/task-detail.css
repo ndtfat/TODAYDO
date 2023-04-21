@@ -59,6 +59,12 @@
                 inset -20px -20px 60px #ff555b;
 }
 
+.task-detail_wrapper.done .task-detail_time {
+    background: #8deb53;
+    box-shadow: inset 20px 20px 60px #83db4d,
+                inset -20px -20px 60px #99fc5c;
+}
+
 .task-detail_content .task-detail_name {
     font-size: 30px;
     text-align: left;
