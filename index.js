@@ -15,7 +15,7 @@ const synth = window.speechSynthesis;
 const utterance = new SpeechSynthesisUtterance();
 utterance.lang = 'vi';
 utterance.volume = 0;
-utterance.rate = 1;
+utterance.rate = 2;
 //setup firebase
 const firebaseConfig = { 
     apiKey: "AIzaSyAIeEJzEOEQGdQsVMWo7JrrDc-y2ZgJ-_A",
