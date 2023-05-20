@@ -11,10 +11,6 @@ const taskListElement = $('.task-list')
 const taskDesc = $('.add-desc')
 const taskList = JSON.parse(localStorage.getItem('taskList')) || []
 
-const synth = window.speechSynthesis;
-const utterance = new SpeechSynthesisUtterance();
-utterance.lang = 'vi';
-utterance.volume = 0;
 
 //setup firebase
 const firebaseConfig = { 
@@ -86,7 +82,6 @@ const App = {
                     _this.firebase(task)
                     task.isOvertime = true
                     _this.renderTasks(taskList)
-                    console.log("update firebase");
                 }
 
                 return (taskTime > realTime) && !task.isDone
@@ -118,7 +113,6 @@ const App = {
                 "hour": task.hour,
                 "minute": task.minute,
                 "priority": task.priority,
-                "duration": task.duration
             })
             console.log('firebase update');
         }
@@ -198,23 +192,6 @@ const App = {
         taskHour.value = 0
         taskMinute.value = 0
         taskPri.checked = false
-        
-        const start = Date.now();
-        console.log('play', newTask.name);
-        utterance.text = newTask.name
-        synth.speak(utterance);
-        utterance.addEventListener('end', () => {
-            const end = Date.now();
-            const duration = (end - start) / 1000;
-            taskList.forEach(task => {
-                if (task.name === newTask.name && task.hour === newTask.hour) 
-                    task.duration = Math.ceil(duration)
-            })
-                    
-            // save taskList on localStorage
-            console.log(`Duration: ${duration} seconds`);
-            console.log(taskList);
-        });
     },
     handleActions(action, taskElement) {
         switch (action) {
