@@ -11,6 +11,10 @@ const taskListElement = $('.task-list')
 const taskDesc = $('.add-desc')
 const taskList = JSON.parse(localStorage.getItem('taskList')) || []
 
+const synth = window.speechSynthesis;
+const utterance = new SpeechSynthesisUtterance();
+utterance.lang = 'vi';
+utterance.volume = 0;
 
 //setup firebase
 const firebaseConfig = { 
